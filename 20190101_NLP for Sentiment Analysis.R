@@ -7,11 +7,11 @@
 #*  Objective: Explore some of the packages and techniques
 #*  associated with sentiment analysis. Learn more about
 #*  tokenization. Import some sample text blocks and score the 
-#*  sentiment associated with the text. Compare the results to
-#*  the pre-existing sentiment score. Export the results to a 
-#*  CSV file.
+#*  sentiment associated with the text. Utilize topic modeling
+#*  to run unsuperivsed classification against more recent
+#*  Republican vs Democrat State of the Union Addresses.
 #*
-#*  Initial Build - 1/1/2018 - Chris Castillo
+#*  Initial Build - 1/1/2019 - Chris Castillo
 #*
 #*  Change Log
 #*  4/12/2019
@@ -21,7 +21,7 @@
 #*    - Be sure to go back and verify that addresses are not
 #*      duplicating due to written vs verbal address | Fixed
 #*    - Go find additional data source to classify Party of the 
-#*      President giving SOTU
+#*      President giving SOTU | Fixed
 #**************************************************************
 #**************************************************************
 
