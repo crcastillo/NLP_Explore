@@ -32,7 +32,7 @@ Net Sentiment (positive words - negative words) doesn't appear to have significa
 | N/A         | T-Stat                | -0.99  |
 | N/A         | P-Value               | 0.3218 |
 
-![Net Sentiment by Party](https://github.com/crcastillo/NLP_Explore/blob/master/Images/Net Sentiment by Party.png)
+![Net Sentiment by Party](https://raw.githubusercontent.com/crcastillo/NLP_Explore/master/Images/Net%20Sentiment%20by%20Party.png)
 
 Percent Sentiment (positive words / (positive words + negative words) ) indicates that Republicans use a significantly higher proportion of positive words (compared to negative words) compared to Democrats. The edge is realtively slight.
 
@@ -45,7 +45,7 @@ Percent Sentiment (positive words / (positive words + negative words) ) indicate
 | N/A         | T-Stat                | -0.99  |
 | N/A         | P-Value               | 0.3218 |
 
-![Percent Sentiment by Party](https://github.com/crcastillo/NLP_Explore/blob/master/Images/Percent Sentiment by Party.png)
+![Percent Sentiment by Party](https://raw.githubusercontent.com/crcastillo/NLP_Explore/master/Images/Percent%20Sentiment%20by%20Party.png)
 
 The 2-topic model trained since 1981 shows the following classification results:
 
@@ -59,6 +59,6 @@ Topic 1 categorizes Democrats pretty well, while Topic 2 categorizes Republican 
 
 The following wordclouds were generated for Democrats and Republicans and using the top 50 terms.
 
-![Democrat Wordcloud](https://github.com/crcastillo/NLP_Explore/blob/master/Images/Democrat Wordcloud.png)
+![Democrat Wordcloud](https://raw.githubusercontent.com/crcastillo/NLP_Explore/master/Images/Democrat%20Wordcloud.png)
 
-![Republican Wordcloud](https://github.com/crcastillo/NLP_Explore/blob/master/Images/Republican Wordcloud.png)
+![Republican Wordcloud](https://raw.githubusercontent.com/crcastillo/NLP_Explore/master/Images/Republican%20Wordcloud.png)
