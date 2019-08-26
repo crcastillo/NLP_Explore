@@ -16,6 +16,8 @@
 #*  Change Log
 #*  4/12/2019
 #*    - Switching dependencies to web hosted SOTU content
+#*  8/25/2019
+#*    - Switching dependencies to web hosted Presidents content
 #*
 #*  Notes:
 #*    - Be sure to go back and verify that addresses are not
@@ -400,83 +402,75 @@ ggplot(
 
 
 #* Store the President URL
-Presidents_url <- 'https://www.scholastic.com/teachers/articles/teaching-content/timeline-guide-us-presidents/'
+Presidents_url <- 'https://www.presidentsusa.net/partyofpresidents.html'
 
 
 #* Read the Presidents website
 Presidents_Website <- xml2::read_html(Presidents_url)
 
 
-#* Store Presidents Names
-Presidents_Names <- Presidents_Website %>%
-  rvest::html_nodes("div + .textimage-text") %>%
-  rvest::html_nodes("h3") %>%
-  rvest::html_text() %>%
-    gsub(
-      pattern = "^ $"
-      , replacement = ""
-    )
-
-
-#* Clean up Presidents Names; remove blanks (apparently they aren't true blanks)
-Presidents_Names <- Presidents_Names[
-  grep(
-    pattern = '^[1-9]'
-    , x = Presidents_Names
-  )
-  ]
-
-
-#* Remove numbers with period and space
-Presidents_Names <- substr(
-  x = Presidents_Names
-  , start = regexpr(
-    pattern = ". "
-    , text = Presidents_Names
-  ) + 2
-  , stop = nchar(Presidents_Names)
-)
-
-
-#* Store text that contains the characteristics about Presidents
-Presidents_Text <- Presidents_Website %>%
-  rvest::html_nodes("div.textimage-text") %>%
-  rvest::html_nodes("p") %>%
+#* Store political parties
+Political_Parties <- Presidents_Website %>%
+  rvest::html_nodes("div + .row.list") %>%
+  rvest::html_nodes("h4") %>%
   rvest::html_text()
+Political_Parties <- Political_Parties[ Political_Parties != "" ]
 
 
-#* Remove unnecessary records
-Presidents_Text <- Presidents_Text[
-  grep(
-    pattern = "Party:"
-    , x = Presidents_Text
-  )
-  ]
+#* Store President names
+Presidents_Names <- Presidents_Website %>%
+  rvest::html_nodes("div + .row.list") %>%
+  rvest::html_nodes("ul") %>%
+  rvest::html_text() 
 
 
-#* Isolate where Party is identified and strip out everything after | may have to hardcode some fixes... come on site design...
-Presidents_Text <- substr(
-  x = Presidents_Text
-  , start = regexpr(
-    pattern = "Party:"
-    , text = Presidents_Text
-  ) + 7
-  , stop = regexpr(
-    pattern = "(Term:)|(Terms:)"
-    , text = Presidents_Text
-  ) - 1
+#* Split out the different presidents names
+President_Name_Party <- lapply(
+  1:length(Presidents_Names)
+  , function(x){
+    strsplit(
+      x = Presidents_Names[x]
+      , split = "\r\n"
+    )
+  }
 )
 
 
-#* Hardcode some fixes due to inconsistency in the site design
-Presidents_Text[ Presidents_Text == "DemocraticParty: Democrat"] <- "Democratic"
-Presidents_Text[ Presidents_Text == "Democratic"] <- "Democrat"
+#* Assign the names of the political parties
+names(President_Name_Party) <- Political_Parties
 
+
+#* Remove whitespace
+President_Name_Party <- lapply(
+  President_Name_Party
+  , function(x) 
+    sapply(
+      x
+      , trimws
+      )
+  )
+
+
+#* Drop the list with NA name
+President_Name_Party[is.na(names(President_Name_Party))] <- NULL
+
+
+#* Drop all elements that have nchar(x) == 0
+President_Name_Party <- lapply(
+  President_Name_Party
+    , function(x)
+      x[nchar(x)>0]
+  )
+        
 
 #* Create tibble with Name_Party data
 President_Name_Party <- tibble(
-  Name = Presidents_Names
-  , Party = Presidents_Text
+  Name = unlist(President_Name_Party)
+  , Party = gsub(
+    x = names(unlist(President_Name_Party))
+    , pattern ='[0-9]'
+    , replacement = ''
+  )
 )
   
 
@@ -485,7 +479,7 @@ SOTU_Presidents <- tibble(President = Sentiments$President %>% unique())
 
 
 #* Create vector of best approximate matches to SOTU_Presidents
-Presidents_Match <- Presidents_Names[ 
+Presidents_Match <- President_Name_Party$Name[ 
   amatch(
     x = SOTU_Presidents$President
     , table = President_Name_Party$Name
@@ -512,8 +506,8 @@ Party_Data <- SOTU_Presidents %>%
   distinct()
 
 
-#* Hardcode "George H. W. Bush" fix
-Party_Data$President_Match[ Party_Data$President == "George Bush"] <- "George H. W. Bush"
+#* Hardcode "George H. W. Bush" fix | Not necessary
+# Party_Data$President_Match[ Party_Data$President == "George Bush"] <- "George H. W. Bush"
 
 
 #* Append on political party to Sentiments
